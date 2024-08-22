@@ -30,23 +30,20 @@ public class Pixel extends JFrame {
     public void paint(Graphics g) {
         super.paint(g);
 
-        // Zig zag horizontal
         drawZigZagHorizontal(100, 100, 100, Color.BLUE, g);
 
-        // Zig zag vertical
         drawZigZagVertical(250, 100, 100, Color.GREEN, g);
 
-        // Línea con pendiente -1
         drawLineWithNegativeSlope(100, 100, 50, Color.RED, g);
 
-        // Rombo
         drawRombo(300, 200, 50, Color.BLUE, g);
     }
 
     public void drawZigZagHorizontal(int startX, int startY, int length, Color color, Graphics g) {
         int x = startX;
         int y = startY;
-        int stepSize = 10;
+        int stepSize = 20;
+        // para saber si la pendiente es positiva o negativa
         boolean positiveSlope = true;
 
         for (int i = 0; i < length / stepSize; i++) {
@@ -70,7 +67,7 @@ public class Pixel extends JFrame {
     public void drawZigZagVertical(int startX, int startY, int length, Color color, Graphics g) {
         int x = startX;
         int y = startY;
-        int stepSize = 10;
+        int stepSize = 20;
         boolean positiveSlope = true;
 
         for (int i = 0; i < length / stepSize; i++) {
@@ -90,8 +87,6 @@ public class Pixel extends JFrame {
             positiveSlope = !positiveSlope;
         }
     }
-
-    // Dibuja una línea con pendiente -1
     public void drawLineWithNegativeSlope(int startX, int startY, int length, Color color, Graphics g) {
         int x = startX;
         int y = startY;
@@ -102,34 +97,29 @@ public class Pixel extends JFrame {
             y--;
         }
     }
-
-    // Dibuja un rombo centrado en (startX, startY) con un lado de longitud `size`
     public void drawRombo(int centerX, int centerY, int size, Color color, Graphics g) {
+        // para la ubicación de los puntos
         int x = centerX;
         int y = centerY;
 
-        // Lado superior (pendiente positiva 1)
         for (int i = 0; i < size; i++) {
             putPixel(x, y, color);
             x++;
             y--;
         }
 
-        // Lado derecho (pendiente negativa 1)
         for (int i = 0; i < size; i++) {
             putPixel(x, y, color);
             x++;
             y++;
         }
 
-        // Lado inferior (pendiente positiva 1)
         for (int i = 0; i < size; i++) {
             putPixel(x, y, color);
             x--;
             y++;
         }
 
-        // Lado izquierdo (pendiente negativa 1)
         for (int i = 0; i < size; i++) {
             putPixel(x, y, color);
             x--;
