@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 
 public class Pixel extends JFrame {
     private BufferedImage buffer;
-    private Graphics graPixel;
 
     public static void main(String[] args) {
         Pixel v = new Pixel();
@@ -19,102 +18,122 @@ public class Pixel extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         buffer = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
-        graPixel = (Graphics2D) buffer.createGraphics();
         setVisible(true);
     }
 
     public void putPixel(int x, int y, Color c) {
-        //se le da color al pizel
         buffer.setRGB(0, 0, c.getRGB());
-        //Se establecen las caracteristicas de ese pixel
         this.getGraphics().drawImage(buffer, x, y, this);
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        int x = 150, y = 0, m = 1, b = 5, aux = 150, counter = 0, lastx = 0;
-        g.drawString("Punto inicial: (" + x + ", " + y + ")", 10, 20);
-        //Zig zag en horizontal
-        for (int i = 0; i < 200; i++) {
-            if (i < 50) {
-                y = m * aux + b;
-                putPixel(x, y, Color.RED);
-                aux++;
-                x--;
-            } else if (i < 100) {
-                if (counter >= 1) {
-                    y = m * x + b;
-                    putPixel(x, y, Color.BLACK);
+
+        // Zig zag horizontal
+        drawZigZagHorizontal(100, 100, 100, Color.BLUE, g);
+
+        // Zig zag vertical
+        drawZigZagVertical(250, 100, 100, Color.GREEN, g);
+
+        // Línea con pendiente -1
+        drawLineWithNegativeSlope(100, 100, 50, Color.RED, g);
+
+        // Rombo
+        drawRombo(300, 200, 50, Color.BLUE, g);
+    }
+
+    public void drawZigZagHorizontal(int startX, int startY, int length, Color color, Graphics g) {
+        int x = startX;
+        int y = startY;
+        int stepSize = 10;
+        boolean positiveSlope = true;
+
+        for (int i = 0; i < length / stepSize; i++) {
+            if (positiveSlope) {
+                for (int j = 0; j < stepSize; j++) {
+                    putPixel(x, y, color);
                     x++;
-                    lastx = x;
-                } else {
-                    x = 150;
-                    y = 0;
-                    aux = 150;
-                    counter++;
-                }
-            } else if (i < 150) {
-                if (counter == 1) {
-                    y = 0;
-                    x = lastx + 50;
-                    counter++;
-                } else {
-                    y = m * aux + b;
-                    putPixel(x, y, Color.BLUE);
-                    aux++;
-                    x--;
+                    y--;
                 }
             } else {
-                //TODO: Implement the last part of the exercise
-            }
-        }
-        //Linea inclinada al reves
-        y = 100;
-        x = 300;
-        aux = x;
-        for (int i = 0; i < 100; i++) {
-            y = m * aux + b;
-            putPixel(x, y, Color.RED);
-            aux++;
-            x--;
-        }
-        x = 50;
-        aux = 50;
-        y = 0;
-        b = 1;
-        counter = 0;
-        //Zig zag en vertical
-        for (int i = 0; i < 100; i++) {
-            if (i < 25) {
-                y = m * x + b;
-                putPixel(x, y, Color.RED);
-                x++;
-            } else if (i < 50) {
-                if (counter >= 1) {
-                    y = m * x + b;
-                    putPixel(x, y, Color.CYAN);
+                for (int j = 0; j < stepSize; j++) {
+                    putPixel(x, y, color);
                     x++;
-                    lastx = x;
-                } else {
-                    x = 50;
-                    y = 0;
-                    aux = 50;
-                    counter++;
+                    y++;
+                }
+            }
+            positiveSlope = !positiveSlope;
+        }
+    }
+
+    public void drawZigZagVertical(int startX, int startY, int length, Color color, Graphics g) {
+        int x = startX;
+        int y = startY;
+        int stepSize = 10;
+        boolean positiveSlope = true;
+
+        for (int i = 0; i < length / stepSize; i++) {
+            if (positiveSlope) {
+                for (int j = 0; j < stepSize; j++) {
+                    putPixel(x, y, color);
+                    x++;
+                    y++;
                 }
             } else {
-                if (counter == 1) {
-                    y = 0;
-                    x = lastx + 50;
-                    counter++;
-                } else {
-                    y = m * aux + b;
-                    putPixel(x, y, Color.BLUE);
-                    aux++;
+                for (int j = 0; j < stepSize; j++) {
+                    putPixel(x, y, color);
                     x--;
+                    y++;
                 }
             }
+            positiveSlope = !positiveSlope;
+        }
+    }
+
+    // Dibuja una línea con pendiente -1
+    public void drawLineWithNegativeSlope(int startX, int startY, int length, Color color, Graphics g) {
+        int x = startX;
+        int y = startY;
+
+        for (int i = 0; i < length; i++) {
+            putPixel(x, y, color);
+            x++;
+            y--;
+        }
+    }
+
+    // Dibuja un rombo centrado en (startX, startY) con un lado de longitud `size`
+    public void drawRombo(int centerX, int centerY, int size, Color color, Graphics g) {
+        int x = centerX;
+        int y = centerY;
+
+        // Lado superior (pendiente positiva 1)
+        for (int i = 0; i < size; i++) {
+            putPixel(x, y, color);
+            x++;
+            y--;
         }
 
+        // Lado derecho (pendiente negativa 1)
+        for (int i = 0; i < size; i++) {
+            putPixel(x, y, color);
+            x++;
+            y++;
+        }
+
+        // Lado inferior (pendiente positiva 1)
+        for (int i = 0; i < size; i++) {
+            putPixel(x, y, color);
+            x--;
+            y++;
+        }
+
+        // Lado izquierdo (pendiente negativa 1)
+        for (int i = 0; i < size; i++) {
+            putPixel(x, y, color);
+            x--;
+            y--;
+        }
     }
 }
